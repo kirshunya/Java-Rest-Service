@@ -1,7 +1,5 @@
 package com.rateservice.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.rateservice.dao.Rate;
 import com.rateservice.service.RateService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +18,7 @@ public class RateController {
     }
 
     @GetMapping("/rates")
-    public String getRatesForCurrency(@RequestParam String name) throws JsonProcessingException {
+    public String getRatesForCurrency(@RequestParam String name) {
         return service.getRateForCurrency(name);
     }
 
