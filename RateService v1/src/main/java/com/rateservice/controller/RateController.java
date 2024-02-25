@@ -1,9 +1,12 @@
 package com.rateservice.controller;
 
+import com.rateservice.dao.Rate;
 import com.rateservice.service.RateService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -13,12 +16,12 @@ public class RateController {
     private final RateService service;
 
     @GetMapping
-    public Flux<String> getRates() {
+    public  Mono<List<Rate>> getRates() {
         return service.getAllCurrencies();
     }
 
     @GetMapping("/rates")
-    public String getRatesForCurrency(@RequestParam String name) {
+    public Rate getRatesForCurrency(@RequestParam String name) {
         return service.getRateForCurrency(name);
     }
 
