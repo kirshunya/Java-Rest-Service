@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("exchange_rate")
+@RequestMapping("api/v1/exchange_rate")
 public class RateController {
 
     private final RateService service;
