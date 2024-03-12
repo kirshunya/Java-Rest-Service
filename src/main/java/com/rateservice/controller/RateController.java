@@ -13,18 +13,17 @@ import java.util.List;
 @RequestMapping("exchange_rate")
 public class RateController {
 
-    private final RateService service;
+    private final RateService rateService;
+
 
     @GetMapping
     public  Mono<List<Rate>> getRates() {
-        return service.getAllCurrencies();
+        return rateService.getAllCurrencies();
     }
 
     @GetMapping("/rates")
     public Rate getRatesForCurrency(@RequestParam String name) {
-        return service.getRateForCurrency(name);
+        return rateService.getRateForCurrency(name);
     }
-
-
 
 }
