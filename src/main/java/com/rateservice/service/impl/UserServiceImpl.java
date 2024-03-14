@@ -5,6 +5,7 @@ import com.rateservice.dao.User;
 import com.rateservice.repository.PayCardsRepository;
 import com.rateservice.repository.UserRepository;
 import com.rateservice.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Sort;
@@ -18,6 +19,7 @@ import java.util.List;
 @Primary
 public class UserServiceImpl implements UserService {
     private UserRepository repository;
+    private PayCardsRepository cardsRepository;
     @Override
     public List<User> getAllUsers() {
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
@@ -97,17 +99,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String deleteCard(Long usId, Long cardId) {
-        User user = findUserById(usId);
-        PayCard cardToRemove = user.getPayCards().stream()
-                .filter(userCard -> userCard.getId().equals(cardId))
+        User user = repository.findById(usId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        PayCard payCard = user.getPayCards().stream()
+                .filter(card -> card.getId().equals(cardId))
                 .findFirst()
-                .orElse(null);
-        if (cardToRemove != null) {
-            user.getPayCards().remove(cardToRemove);
-            repository.save(user);
-            return "Card has been removed.";
-        }
-        return "Card has not been removed.";
+                .orElseThrow(() -> new EntityNotFoundException("PayCard not found"));
+        user.getPayCards().remove(payCard);
+        cardsRepository.deleteById(cardId);
+        repository.save(user);
+        return "Card has been removed.";
     }
 
 
