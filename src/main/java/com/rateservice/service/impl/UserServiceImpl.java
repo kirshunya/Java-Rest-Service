@@ -1,7 +1,9 @@
 package com.rateservice.service.impl;
 
+import com.rateservice.dao.Bank;
 import com.rateservice.dao.PayCard;
 import com.rateservice.dao.User;
+import com.rateservice.repository.BankRepository;
 import com.rateservice.repository.PayCardsRepository;
 import com.rateservice.repository.UserRepository;
 import com.rateservice.service.UserService;
@@ -18,8 +20,12 @@ import java.util.List;
 @AllArgsConstructor
 @Primary
 public class UserServiceImpl implements UserService {
+
+    private static final String USER_NOT_FOUND = "User not found.";
+
     private UserRepository repository;
     private PayCardsRepository cardsRepository;
+    private BankRepository bankRepository;
     @Override
     public List<User> getAllUsers() {
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
@@ -50,21 +56,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
-        User userExisting = findUserById(id);
-        if (userExisting != null) {
-            repository.deleteById(id);
+        User user = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND + "with id " + id));
+
+        // Удаление связи между пользователем и банками
+        for (Bank bank : user.getBanks()) {
+            bank.getUsers().remove(user);
+            bankRepository.save(bank); // Обновление банка для сохранения изменений в связи
         }
+
+        // Удаление пользователя
+        repository.delete(user);
     }
 
     @Override
     public User findUserById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        return repository.findById(id).orElseThrow(() -> new RuntimeException(USER_NOT_FOUND + "with id: " + id));
     }
 
     @Override
     public boolean addCard(Long usId, PayCard card) {
         User user = findUserById(usId);
-
         if (user != null) {
              card.setUser(user);
             user.getPayCards().add(card);
@@ -82,7 +94,6 @@ public class UserServiceImpl implements UserService {
                 .findFirst()
                 .orElse(null);
         if (cardToUpdate != null) {
-            // Изменение информации о карте
             cardToUpdate.setFirstDigits(card.getFirstDigits());
             cardToUpdate.setSecondDigits(card.getSecondDigits());
             cardToUpdate.setThirdDigits(card.getThirdDigits());
@@ -99,7 +110,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String deleteCard(Long usId, Long cardId) {
-        User user = repository.findById(usId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        User user = repository.findById(usId).orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND));
         PayCard payCard = user.getPayCards().stream()
                 .filter(card -> card.getId().equals(cardId))
                 .findFirst()
@@ -108,6 +119,30 @@ public class UserServiceImpl implements UserService {
         cardsRepository.deleteById(cardId);
         repository.save(user);
         return "Card has been removed.";
+    }
+
+    @Override
+    public boolean addBank(Long usId, Bank bank) {
+        User user = repository.findById(usId)
+                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND));
+        if (user != null) {
+            user.getBanks().add(bank);
+            repository.save(user);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public User addBankById(Long usId, Long bkId) {
+        User user = repository.findById(usId).orElseThrow(() -> new RuntimeException(USER_NOT_FOUND));
+        Bank bank = bankRepository.findById(bkId).orElseThrow(() -> new RuntimeException("Bank not found"));
+        user.getBanks().add(bank);
+        bank.getUsers().add(user);
+        bank.setNumberOfUsers(bank.getNumberOfUsers() + 1);
+        repository.save(user);
+        bankRepository.save(bank);
+        return user;
     }
 
 

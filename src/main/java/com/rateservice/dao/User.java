@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -19,17 +20,15 @@ public class User {
     private String firstName;
     private String lastName;
     @Column(unique = true)
-    private String email;
+    private String email = "";
     private byte sucCredits;
     private byte failCredits;
     private LocalDate dateOfReg;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    //@JoinColumn(name = "user_id")
-    //@Column(unique = true)
-    private Set<PayCard> payCards;
+    private Set<PayCard> payCards = new HashSet<>();
 
-
-
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Bank> banks = new HashSet<>();
 
 }

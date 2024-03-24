@@ -1,5 +1,6 @@
 package com.rateservice.service;
 
+import com.rateservice.dao.Bank;
 import com.rateservice.dao.PayCard;
 import com.rateservice.dao.User;
 
@@ -11,7 +12,12 @@ public interface UserService {
     User updateUser(Long id, User newUser);
     void deleteUser(Long id);
     User findUserById(Long id);
+
     boolean addCard(Long usId, PayCard card);
     PayCard updateCard(Long usId, PayCard card, Long cardId);
     String deleteCard(Long usId, Long cardId);
+
+    boolean addBank(Long usId, Bank bank);
+
+    User addBankById(Long usId, Long bkId);
 }

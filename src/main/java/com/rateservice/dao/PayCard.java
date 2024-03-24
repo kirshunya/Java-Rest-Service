@@ -30,6 +30,4 @@ public class PayCard {
     private User user;
 
 
-
-
 }
