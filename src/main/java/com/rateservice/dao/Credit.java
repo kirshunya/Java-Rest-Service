@@ -1,5 +1,6 @@
 package com.rateservice.dao;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,5 +17,10 @@ public class Credit {
     private Long id;
     private float value;
     private LocalDate endOfCredit;
+
+    @JsonIgnore
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }

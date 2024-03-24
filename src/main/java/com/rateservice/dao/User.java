@@ -21,8 +21,8 @@ public class User {
     private String lastName;
     @Column(unique = true)
     private String email = "";
-    private byte sucCredits;
-    private byte failCredits;
+    private int sucCredits;
+    private int failCredits;
     private LocalDate dateOfReg;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -30,5 +30,8 @@ public class User {
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Bank> banks = new HashSet<>();
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Credit credit;
 
 }

@@ -46,14 +46,10 @@ public class BankServiceImpl implements BankService {
     public void deleteBank(Long id) {
         Bank bank = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(BANK_NOT_FOUND + id));
-
-        // Удаление связи между банком и пользователями
         for (User user : bank.getUsers()) {
             user.getBanks().remove(bank);
-            userRepository.save(user); // Обновление пользователя для сохранения изменений в связи
+            userRepository.save(user);
         }
-
-        // Удаление банка
         repository.delete(bank);
     }
 

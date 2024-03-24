@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("api/credits")
+@RequestMapping("/api/credits")
 public class CreditController {
     private final CreditService creditService;
 
@@ -28,4 +28,13 @@ public class CreditController {
 
     @GetMapping("/find/{id}")
     Credit getCreditById(@PathVariable Long id) { return creditService.findCreditById(id); }
+
+    @PostMapping("/add_user_by_id/{crId}")
+    Credit addUserById(@PathVariable Long crId, @RequestParam Long usId) { return creditService.addCreditToUserById(crId, usId); }
+
+    @PostMapping("/add_user/{usId}")
+    Credit addUser(@PathVariable Long usId, @RequestBody Credit credit) { return creditService.addCreditToUser(credit, usId);}
+
+    @DeleteMapping("/pay_credit/{crId}")
+    String payCredit(@PathVariable Long crId, @RequestParam Long cardId) { return creditService.creditPay(crId, cardId);}
 }

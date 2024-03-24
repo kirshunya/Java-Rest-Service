@@ -14,7 +14,6 @@ public interface BankService {
     void deleteBank(Long id);
     Bank findBankById(Long id);
     Bank addUser(User user, Long bkId);
-
     Bank addUserById(Long usId, Long bkId);
     Set<User> getAllBankUsers(Long bkId);
 }
