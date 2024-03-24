@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 public interface BankService {
-
     List<Bank> getAllBanks();
     Bank saveBank(Bank bank);
     Bank updateBank(Long id, Bank newBank);

@@ -5,8 +5,10 @@ import com.rateservice.dao.PayCard;
 import com.rateservice.dao.User;
 import com.rateservice.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -37,7 +39,7 @@ public class UserController {
     }
 
     @PostMapping("/add_card/{id}")
-    public boolean addCardToUser(@PathVariable Long id, @RequestBody PayCard paycard) {
+    public String addCardToUser(@PathVariable Long id, @RequestBody PayCard paycard) {
         return service.addCard(id, paycard);
     }
 
@@ -59,6 +61,11 @@ public class UserController {
     @PostMapping("/add_bank_by_id/{usId}")
     public User addBankToUserById(@PathVariable Long usId, @RequestParam Long bkId) {
         return service.addBankById(usId, bkId);
+    }
+
+    @GetMapping("/credit_date_greater_than/")
+    public List<User> getUsersWithCreditDateGreaterThan(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return service.findUsersWithCreditDateGreaterThan(date);
     }
 }
 

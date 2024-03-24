@@ -15,7 +15,6 @@ public class RateController {
 
     private final RateService rateService;
 
-
     @GetMapping
     public  Mono<List<Rate>> getRates() {
         return rateService.getAllCurrencies();

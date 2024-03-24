@@ -15,19 +15,14 @@ public class PayCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private double value;
     private short firstDigits;
     private short secondDigits;
     private short thirdDigits;
     private short fourthDigits;
-
     private LocalDate date;
-
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-
 }

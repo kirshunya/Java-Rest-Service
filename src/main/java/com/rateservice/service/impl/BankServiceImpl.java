@@ -87,6 +87,4 @@ public class BankServiceImpl implements BankService {
         repository.save(bank);
         return bank;
     }
-
-
 }

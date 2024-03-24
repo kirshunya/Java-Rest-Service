@@ -16,7 +16,6 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String firstName;
     private String lastName;
     @Column(unique = true)
@@ -24,13 +23,10 @@ public class User {
     private int sucCredits;
     private int failCredits;
     private LocalDate dateOfReg;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<PayCard> payCards = new HashSet<>();
-
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Bank> banks = new HashSet<>();
-
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Credit credit;
 

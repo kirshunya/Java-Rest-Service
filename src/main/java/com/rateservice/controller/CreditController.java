@@ -1,6 +1,5 @@
 package com.rateservice.controller;
 
-
 import com.rateservice.dao.Credit;
 import com.rateservice.service.CreditService;
 import lombok.AllArgsConstructor;

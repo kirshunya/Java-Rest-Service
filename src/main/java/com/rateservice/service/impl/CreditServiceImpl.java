@@ -8,7 +8,10 @@ import com.rateservice.repository.CreditRepository;
 import com.rateservice.repository.PayCardsRepository;
 import com.rateservice.repository.UserRepository;
 import com.rateservice.service.CreditService;
+import jakarta.persistence.Cacheable;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 @Primary
+@Cacheable
 
 public class CreditServiceImpl implements CreditService {
     private final CreditRepository repository;
@@ -28,17 +32,20 @@ public class CreditServiceImpl implements CreditService {
     private final PayCardsRepository payCardsRepository;
 
     @Override
+
     public List<Credit> getAllCredits() {
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
         return repository.findAll(sort);
     }
 
     @Override
+    @CachePut(value = "credits", key = "#credit.id")
     public Credit saveCredit(Credit credit) {
         return repository.save(credit);
     }
 
     @Override
+    @CachePut(value = "credits", key = "#credit.id")
     public Credit updateCredit(Long id, Credit newCredit) {
         Credit credit = repository.findById(id).orElseThrow(() -> new RuntimeException("Credit not found"));
         credit.setValue(newCredit.getValue());
@@ -46,6 +53,7 @@ public class CreditServiceImpl implements CreditService {
     }
 
     @Override
+    @CacheEvict(value = "credits", key = "#id")
     public void deleteCredit(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id " + id));
         Credit credit = user.getCredit();

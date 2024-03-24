@@ -12,5 +12,4 @@ import java.util.List;
 @AllArgsConstructor
 public class RatesResponse {
     private List<Rate> rates;
-
 }

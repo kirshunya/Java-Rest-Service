@@ -20,7 +20,6 @@ import java.util.List;
 @AllArgsConstructor
 @Primary
 public class UserServiceImpl implements UserService {
-
     private static final String USER_NOT_FOUND = "User not found.";
 
     private UserRepository repository;
@@ -59,13 +58,11 @@ public class UserServiceImpl implements UserService {
         User user = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND + "with id " + id));
 
-        // Удаление связи между пользователем и банками
         for (Bank bank : user.getBanks()) {
             bank.getUsers().remove(user);
-            bankRepository.save(bank); // Обновление банка для сохранения изменений в связи
+            bankRepository.save(bank);
         }
 
-        // Удаление пользователя
         repository.delete(user);
     }
 
@@ -75,15 +72,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean addCard(Long usId, PayCard card) {
+    public String addCard(Long usId, PayCard card) {
         User user = findUserById(usId);
         if (user != null) {
              card.setUser(user);
             user.getPayCards().add(card);
             repository.save(user);
-            return true;
+            return "Card has been added.";
         }
-        return false;
+        return "Card hasn't been added.";
     }
 
     @Override
@@ -106,7 +103,6 @@ public class UserServiceImpl implements UserService {
         }
         return null;
     }
-
 
     @Override
     public String deleteCard(Long usId, Long cardId) {
@@ -144,10 +140,8 @@ public class UserServiceImpl implements UserService {
         bankRepository.save(bank);
         return user;
     }
-
-
-
-
-
-
+    @Override
+    public List<User> findUsersWithCreditDateGreaterThan(LocalDate inputDate) {
+        return repository.findUsersWithCreditDateGreaterThan(inputDate);
+    }
 }

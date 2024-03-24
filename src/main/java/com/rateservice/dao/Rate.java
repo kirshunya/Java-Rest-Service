@@ -20,7 +20,6 @@ public class Rate {
      private int quantity;
      private String name;
      private String date;
-
 }
 
 
