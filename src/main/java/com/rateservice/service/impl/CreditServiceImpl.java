@@ -10,8 +10,6 @@ import com.rateservice.repository.UserRepository;
 import com.rateservice.service.CreditService;
 import jakarta.persistence.Cacheable;
 import lombok.AllArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -39,21 +37,22 @@ public class CreditServiceImpl implements CreditService {
     }
 
     @Override
-    @CachePut(value = "credits", key = "#credit.id")
+    //@CachePut(value = "credits", key = "#credit.id")
     public Credit saveCredit(Credit credit) {
         return repository.save(credit);
     }
 
     @Override
-    @CachePut(value = "credits", key = "#credit.id")
+    //@CachePut(value = "credits", key = "#credit.id")
     public Credit updateCredit(Long id, Credit newCredit) {
         Credit credit = repository.findById(id).orElseThrow(() -> new RuntimeException("Credit not found"));
         credit.setValue(newCredit.getValue());
+        credit.setEndOfCredit(newCredit.getEndOfCredit());
         return repository.save(credit);
     }
 
     @Override
-    @CacheEvict(value = "credits", key = "#id")
+    //@CacheEvict(value = "credits", key = "#id")
     public void deleteCredit(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id " + id));
         Credit credit = user.getCredit();

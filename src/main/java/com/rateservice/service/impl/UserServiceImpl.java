@@ -7,6 +7,7 @@ import com.rateservice.repository.BankRepository;
 import com.rateservice.repository.PayCardsRepository;
 import com.rateservice.repository.UserRepository;
 import com.rateservice.service.UserService;
+import com.rateservice.utilities.Cache;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
@@ -21,10 +22,13 @@ import java.util.List;
 @Primary
 public class UserServiceImpl implements UserService {
     private static final String USER_NOT_FOUND = "User not found.";
+    private final Cache cache;
+
 
     private UserRepository repository;
     private PayCardsRepository cardsRepository;
     private BankRepository bankRepository;
+
     @Override
     public List<User> getAllUsers() {
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
@@ -61,6 +65,10 @@ public class UserServiceImpl implements UserService {
         for (Bank bank : user.getBanks()) {
             bank.getUsers().remove(user);
             bankRepository.save(bank);
+        }
+        if (user.getCredit() != null)
+        {
+            cache.remove("authors");
         }
 
         repository.delete(user);
@@ -142,6 +150,12 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public List<User> findUsersWithCreditDateGreaterThan(LocalDate inputDate) {
-        return repository.findUsersWithCreditDateGreaterThan(inputDate);
+        if (cache.isUsersByDateCached(inputDate)) {
+            return cache.getUsersByDate(inputDate);
+        } else {
+            List<User> users = repository.findUsersWithCreditDateGreaterThan(inputDate);
+            cache.cacheUsersByDate(inputDate, users);
+            return users;
+        }
     }
 }
