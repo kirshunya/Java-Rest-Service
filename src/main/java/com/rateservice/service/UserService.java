@@ -22,5 +22,5 @@ public interface UserService {
     boolean addBank(Long usId, Bank bank);
 
     User addBankById(Long usId, Long bkId);
-    List<User> findUsersWithCreditDateGreaterThan(LocalDate inputDate);
+    Object findUsersWithCreditDateGreaterThan(LocalDate inputDate);
 }

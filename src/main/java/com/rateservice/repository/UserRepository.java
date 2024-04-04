@@ -6,10 +6,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    @Query("SELECT u FROM User u JOIN u.credit c WHERE c.endOfCredit > :inputDate")
-    List<User> findUsersWithCreditDateGreaterThan(@Param("inputDate") LocalDate inputDate);
+    @Query("SELECT u FROM User u JOIN u.credit c WHERE c.endOfCredit = :inputDate")
+    Set<User> findUsersWithCreditDateGreaterThan(@Param("inputDate") LocalDate inputDate);
 }

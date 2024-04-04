@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/user")
@@ -66,7 +67,7 @@ public class UserController {
 
     @Timed(value = "findUsersWithCreditDateGreaterThan.time", description = "Time taken to find users with credit date greater than")
     @GetMapping("/credit_date_greater_than/")
-    public List<User> getUsersWithCreditDateGreaterThan(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+    public Object getUsersWithCreditDateGreaterThan(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return service.findUsersWithCreditDateGreaterThan(date);
     }
 }

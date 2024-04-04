@@ -15,4 +15,6 @@ management:
       exposure:
         include: "*"
       base-path: /actuator
+logging:
+  config: classpath:log4j.xml
 
