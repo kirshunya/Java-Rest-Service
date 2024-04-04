@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -23,7 +24,6 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private static final String USER_NOT_FOUND = "User not found.";
     private final Cache cache;
-
 
     private UserRepository repository;
     private PayCardsRepository cardsRepository;
@@ -52,6 +52,10 @@ public class UserServiceImpl implements UserService {
                     u.setDateOfReg(newUser.getDateOfReg());
                     u.setFailCredits(newUser.getFailCredits());
                     u.setSucCredits(newUser.getSucCredits());
+              if (cache.containsKey(u.getCredit().getEndOfCredit())) {
+                  cache.removeFromCache(u.getCredit().getEndOfCredit());
+                  cache.cacheUsersByDate(u.getCredit().getEndOfCredit(), u);
+              }
                     return repository.save(u);
                 })
                 .orElse(null);
@@ -66,9 +70,8 @@ public class UserServiceImpl implements UserService {
             bank.getUsers().remove(user);
             bankRepository.save(bank);
         }
-        if (user.getCredit() != null)
-        {
-            cache.remove("authors");
+        if (cache.containsKey(user.getCredit().getEndOfCredit())) {
+            cache.removeFromCache(user.getCredit().getEndOfCredit());
         }
 
         repository.delete(user);
@@ -83,7 +86,7 @@ public class UserServiceImpl implements UserService {
     public String addCard(Long usId, PayCard card) {
         User user = findUserById(usId);
         if (user != null) {
-             card.setUser(user);
+            card.setUser(user);
             user.getPayCards().add(card);
             repository.save(user);
             return "Card has been added.";
@@ -149,11 +152,11 @@ public class UserServiceImpl implements UserService {
         return user;
     }
     @Override
-    public List<User> findUsersWithCreditDateGreaterThan(LocalDate inputDate) {
-        if (cache.isUsersByDateCached(inputDate)) {
+    public Object findUsersWithCreditDateGreaterThan(LocalDate inputDate) {
+        if (cache.containsKey(inputDate)) {
             return cache.getUsersByDate(inputDate);
         } else {
-            List<User> users = repository.findUsersWithCreditDateGreaterThan(inputDate);
+            Set<User> users = repository.findUsersWithCreditDateGreaterThan(inputDate);
             cache.cacheUsersByDate(inputDate, users);
             return users;
         }
