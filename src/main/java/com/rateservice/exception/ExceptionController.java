@@ -1,8 +1,6 @@
 package com.rateservice.exception;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -13,55 +11,64 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+/** JavaDoc COMMENT. */
 @RestControllerAdvice
 public class ExceptionController {
-    private static final Logger logger = LoggerFactory.getLogger(ExceptionController.class.getName());
+  /** JavaDoc COMMENT. */
+  @ExceptionHandler({Exception.class})
+  public ResponseEntity<Message> exception(Exception ex) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        .body(new Message(HttpStatus.NOT_FOUND.toString(), ex.getMessage()));
+  }
 
-    @ExceptionHandler({Exception.class})
-    public ResponseEntity<Object> exception(Exception ex) {
-        logger.error("Error . Error not found.", ex);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error . Error not found.");
-    }
+  /** JavaDoc COMMENT. */
+  @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
+  public ResponseEntity<Message> requestMethod(HttpRequestMethodNotSupportedException ex) {
+    return ResponseEntity.status(ex.getStatusCode())
+        .body(new Message(ex.getStatusCode().toString(), ex.getMessage()));
+  }
 
-    @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
-    public ResponseEntity<Object> requestMethod(HttpRequestMethodNotSupportedException ex) {
-        logger.error("Error 405. Method not supported.", ex);
-        return ResponseEntity.status(ex.getStatusCode()).body("Error 405. Method not supported.");
-    }
+  /** JavaDoc COMMENT. */
+  @ExceptionHandler({NoResourceFoundException.class})
+  public ResponseEntity<Message> noResource(NoResourceFoundException ex) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        .body(new Message(ex.getStatusCode().toString(), ex.getMessage()));
+  }
 
-    @ExceptionHandler({NoResourceFoundException.class})
-    public ResponseEntity<Object> noResource(NoResourceFoundException ex) {
-        logger.error("Error 404. Resource not found.", ex);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error 404. Resource not found.");
-    }
+  /** JavaDoc COMMENT. */
+  @ExceptionHandler({EntityNotFoundException.class})
+  public ResponseEntity<Message> entityNotFound(EntityNotFoundException ex) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        .body(new Message(HttpStatus.NOT_FOUND.toString(), ex.getMessage()));
+  }
 
-    @ExceptionHandler({EntityNotFoundException.class})
-    public ResponseEntity<Object> entityNotFound(EntityNotFoundException ex) {
-        logger.error("Error 404. Entity not found.", ex);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error 404. Entity not found.");
-    }
+  /** JavaDoc COMMENT. */
+  @ExceptionHandler({RuntimeException.class})
+  public ResponseEntity<Message> runtimeException(RuntimeException ex) {
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body(new Message(HttpStatus.INTERNAL_SERVER_ERROR.toString(), ex.getMessage()));
+  }
 
-    @ExceptionHandler({RuntimeException.class})
-    public ResponseEntity<Object> runtimeException(RuntimeException ex) {
-        logger.error("Error 500. Runtime exception.", ex);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error 500. Runtime exception.");
-    }
+  /** JavaDoc COMMENT. */
+  @ExceptionHandler({MissingServletRequestParameterException.class})
+  public ResponseEntity<Message> missingServlet(MissingServletRequestParameterException ex) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body(new Message(HttpStatus.BAD_REQUEST.toString(), ex.getMessage()));
+  }
 
-    @ExceptionHandler({MissingServletRequestParameterException.class})
-    public ResponseEntity<Object> missingServlet(MissingServletRequestParameterException ex) {
-        logger.error("Error 400. Missing Servlet.", ex);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error 400. Missing Servlet.");
-    }
+  /** JavaDoc COMMENT. */
+  @ExceptionHandler({HttpServerErrorException.BadGateway.class})
+  public ResponseEntity<Message> badGateway(HttpServerErrorException.BadGateway ex) {
+    return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+        .body(new Message(HttpStatus.BAD_GATEWAY.toString(), ex.getMessage()));
+  }
 
-    @ExceptionHandler({HttpServerErrorException.BadGateway.class})
-    public ResponseEntity<Object> badGateway(HttpServerErrorException.BadGateway ex) {
-        logger.error("Error 502. BadGeteway.", ex);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error 502. BadGeteway.");
-    }
+  /** JavaDoc COMMENT. */
+  @ExceptionHandler({HttpClientErrorException.NotAcceptable.class})
+  public ResponseEntity<Message> badGateway(HttpClientErrorException.NotAcceptable ex) {
+    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+        .body(new Message(HttpStatus.NOT_ACCEPTABLE.toString(), ex.getMessage()));
+  }
 
-    @ExceptionHandler({HttpClientErrorException.NotAcceptable.class})
-    public ResponseEntity<Object> badGateway(HttpClientErrorException.NotAcceptable ex) {
-        logger.error("Error 406. Not Acceptable.", ex);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error 406. Not Acceptable.");
-    }
+  private record Message(String message, String description) {}
 }
