@@ -3,8 +3,10 @@ package com.rateservice.service;
 import com.rateservice.dao.Bank;
 import com.rateservice.dao.PayCard;
 import com.rateservice.dao.User;
+
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 /** JavaDoc COMMENT. */
 public interface UserService {
@@ -30,4 +32,7 @@ public interface UserService {
   User addBankById(Long usId, Long bkId);
 
   Object findUsersWithCreditDateGreaterThan(LocalDate inputDate);
+
+  Set<User> bulkCreateUsers(List<User> users);
+
 }

@@ -12,6 +12,8 @@ import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Sort;
@@ -171,5 +173,14 @@ public class UserServiceImpl implements UserService {
       cache.cacheUsersByDate(inputDate, users);
       return users;
     }
+  }
+
+  @Override
+  public Set<User> bulkCreateUsers(List<User> users) {
+    LocalDate currentDate = LocalDate.now();
+    return users.stream()
+        .peek(user -> user.setDateOfReg(currentDate))
+        .map(repository::save)
+        .collect(Collectors.toSet());
   }
 }

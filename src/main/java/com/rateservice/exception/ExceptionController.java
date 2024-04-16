@@ -11,59 +11,59 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-/** JavaDoc COMMENT. */
+/** Exceptions catcher. */
 @RestControllerAdvice
 public class ExceptionController {
-  /** JavaDoc COMMENT. */
+  /** general exception. */
   @ExceptionHandler({Exception.class})
   public ResponseEntity<Message> exception(Exception ex) {
     return ResponseEntity.status(HttpStatus.NOT_FOUND)
         .body(new Message(HttpStatus.NOT_FOUND.toString(), ex.getMessage()));
   }
 
-  /** JavaDoc COMMENT. */
+  /** HttpRequest not supported. 405*/
   @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
   public ResponseEntity<Message> requestMethod(HttpRequestMethodNotSupportedException ex) {
     return ResponseEntity.status(ex.getStatusCode())
         .body(new Message(ex.getStatusCode().toString(), ex.getMessage()));
   }
 
-  /** JavaDoc COMMENT. */
+  /** Resource not found. 404*/
   @ExceptionHandler({NoResourceFoundException.class})
   public ResponseEntity<Message> noResource(NoResourceFoundException ex) {
     return ResponseEntity.status(HttpStatus.NOT_FOUND)
         .body(new Message(ex.getStatusCode().toString(), ex.getMessage()));
   }
 
-  /** JavaDoc COMMENT. */
+  /** Entity not found. 404 */
   @ExceptionHandler({EntityNotFoundException.class})
   public ResponseEntity<Message> entityNotFound(EntityNotFoundException ex) {
     return ResponseEntity.status(HttpStatus.NOT_FOUND)
         .body(new Message(HttpStatus.NOT_FOUND.toString(), ex.getMessage()));
   }
 
-  /** JavaDoc COMMENT. */
+  /** Runtime Exception. 500*/
   @ExceptionHandler({RuntimeException.class})
   public ResponseEntity<Message> runtimeException(RuntimeException ex) {
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
         .body(new Message(HttpStatus.INTERNAL_SERVER_ERROR.toString(), ex.getMessage()));
   }
 
-  /** JavaDoc COMMENT. */
+  /** Missing servlet. 400 */
   @ExceptionHandler({MissingServletRequestParameterException.class})
   public ResponseEntity<Message> missingServlet(MissingServletRequestParameterException ex) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
         .body(new Message(HttpStatus.BAD_REQUEST.toString(), ex.getMessage()));
   }
 
-  /** JavaDoc COMMENT. */
+  /** Http Error. 502 */
   @ExceptionHandler({HttpServerErrorException.BadGateway.class})
   public ResponseEntity<Message> badGateway(HttpServerErrorException.BadGateway ex) {
     return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
         .body(new Message(HttpStatus.BAD_GATEWAY.toString(), ex.getMessage()));
   }
 
-  /** JavaDoc COMMENT. */
+  /** Http client error. 406 */
   @ExceptionHandler({HttpClientErrorException.NotAcceptable.class})
   public ResponseEntity<Message> badGateway(HttpClientErrorException.NotAcceptable ex) {
     return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
