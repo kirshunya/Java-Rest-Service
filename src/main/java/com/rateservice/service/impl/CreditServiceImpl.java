@@ -7,7 +7,6 @@ import com.rateservice.repository.CreditRepository;
 import com.rateservice.repository.PayCardsRepository;
 import com.rateservice.repository.UserRepository;
 import com.rateservice.service.CreditService;
-import jakarta.persistence.Cacheable;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 @Primary
-@Cacheable
 public class CreditServiceImpl implements CreditService {
   private final CreditRepository repository;
   private final UserRepository userRepository;
@@ -31,13 +29,11 @@ public class CreditServiceImpl implements CreditService {
   }
 
   @Override
-  // @CachePut(value = "credits", key = "#credit.id")
   public Credit saveCredit(Credit credit) {
     return repository.save(credit);
   }
 
   @Override
-  // @CachePut(value = "credits", key = "#credit.id")
   public Credit updateCredit(Long id, Credit newCredit) {
     Credit credit =
         repository.findById(id).orElseThrow(() -> new RuntimeException("Credit not found"));
@@ -47,7 +43,6 @@ public class CreditServiceImpl implements CreditService {
   }
 
   @Override
-  // @CacheEvict(value = "credits", key = "#id")
   public void deleteCredit(Long id) {
     User user =
         userRepository

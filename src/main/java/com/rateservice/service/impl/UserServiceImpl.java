@@ -57,10 +57,6 @@ public class UserServiceImpl implements UserService {
               u.setDateOfReg(newUser.getDateOfReg());
               u.setFailCredits(newUser.getFailCredits());
               u.setSucCredits(newUser.getSucCredits());
-              if (cache.containsKey(u.getCredit().getEndOfCredit())) {
-                cache.removeFromCache(u.getCredit().getEndOfCredit());
-                cache.cacheUsersByDate(u.getCredit().getEndOfCredit(), u);
-              }
               return repository.save(u);
             })
         .orElse(null);
@@ -76,9 +72,6 @@ public class UserServiceImpl implements UserService {
     for (Bank bank : user.getBanks()) {
       bank.getUsers().remove(user);
       bankRepository.save(bank);
-    }
-    if (cache.containsKey(user.getCredit().getEndOfCredit())) {
-      cache.removeFromCache(user.getCredit().getEndOfCredit());
     }
 
     repository.delete(user);
