@@ -1,5 +1,6 @@
 package com.rateservice.aop;
 
+import com.rateservice.service.RequestCounter;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
@@ -13,6 +14,12 @@ import org.springframework.stereotype.Component;
 public class LoggingAspect {
   /** JavaDoc COMMENT. */
   private final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
+  private final RequestCounter requestCounter;
+
+  public LoggingAspect(RequestCounter requestCounterService) {
+    this.requestCounter = requestCounterService;
+  }
+
 
   /** JavaDoc COMMENT. */
   @After("execution(* com.rateservice.exception.ExceptionController.*(..))")
@@ -52,5 +59,14 @@ public class LoggingAspect {
     String methodName = joinPoint.getSignature().getName();
     String className = joinPoint.getTarget().getClass().getSimpleName();
     logger.info("Rate Request: {}.{}", className, methodName);
+  }
+
+  /** Java Doc */
+  @After("execution(* com.rateservice.service.RequestCounter.increment())")
+  public void logRequestsCounter(JoinPoint joinPoint) {
+    String methodName = joinPoint.getSignature().getName();
+    String className = joinPoint.getTarget().getClass().getSimpleName();
+    long counterValue = requestCounter.getCount();
+    logger.info("[NEW COUNTER VALUE]: {}.{} - Counter: {}", className, methodName, counterValue);
   }
 }
