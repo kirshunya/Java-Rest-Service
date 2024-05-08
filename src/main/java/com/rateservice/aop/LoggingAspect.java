@@ -62,11 +62,8 @@ public class LoggingAspect {
   }
 
   /** Java Doc */
-  @After("execution(* com.rateservice.service.RequestCounter.increment())")
+  @After("execution(* com.rateservice.service.UserService.getAllUsers())")
   public void logRequestsCounter(JoinPoint joinPoint) {
-    String methodName = joinPoint.getSignature().getName();
-    String className = joinPoint.getTarget().getClass().getSimpleName();
-    long counterValue = requestCounter.getCount();
-    logger.info("[NEW COUNTER VALUE]: {}.{} - Counter: {}", className, methodName, counterValue);
+    logger.info("[NEW COUNTER VALUE]: - Counter: {}",  requestCounter.increment());
   }
 }

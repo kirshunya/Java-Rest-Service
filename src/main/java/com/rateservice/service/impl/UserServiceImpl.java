@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
   private static final String USER_NOT_FOUND = "User not found.";
   private final Cache cache;
-  private final RequestCounter requestCounter;
 
   private UserRepository repository;
   private PayCardsRepository cardsRepository;
@@ -35,7 +34,6 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public List<User> getAllUsers() {
-    requestCounter.increment();
     Sort sort = Sort.by(Sort.Direction.ASC, "id");
     return repository.findAll(sort);
   }

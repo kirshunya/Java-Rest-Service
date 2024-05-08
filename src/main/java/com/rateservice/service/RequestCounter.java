@@ -9,11 +9,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RequestCounter {
   private final AtomicInteger count = new AtomicInteger(0);
 
-  public synchronized void increment() {
-    count.incrementAndGet();
+  public synchronized int increment() {
+    return count.incrementAndGet();
   }
 
-  public synchronized int getCount() {
-    return count.get();
-  }
 }
