@@ -6,12 +6,15 @@ import com.rateservice.dao.User;
 import com.rateservice.repository.BankRepository;
 import com.rateservice.repository.PayCardsRepository;
 import com.rateservice.repository.UserRepository;
+import com.rateservice.service.RequestCounter;
 import com.rateservice.service.UserService;
 import com.rateservice.utilities.Cache;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Sort;
@@ -55,10 +58,6 @@ public class UserServiceImpl implements UserService {
               u.setDateOfReg(newUser.getDateOfReg());
               u.setFailCredits(newUser.getFailCredits());
               u.setSucCredits(newUser.getSucCredits());
-              if (cache.containsKey(u.getCredit().getEndOfCredit())) {
-                cache.removeFromCache(u.getCredit().getEndOfCredit());
-                cache.cacheUsersByDate(u.getCredit().getEndOfCredit(), u);
-              }
               return repository.save(u);
             })
         .orElse(null);
@@ -74,9 +73,6 @@ public class UserServiceImpl implements UserService {
     for (Bank bank : user.getBanks()) {
       bank.getUsers().remove(user);
       bankRepository.save(bank);
-    }
-    if (cache.containsKey(user.getCredit().getEndOfCredit())) {
-      cache.removeFromCache(user.getCredit().getEndOfCredit());
     }
 
     repository.delete(user);
@@ -172,4 +168,14 @@ public class UserServiceImpl implements UserService {
       return users;
     }
   }
+
+  @Override
+  public Set<User> bulkCreateUsers(List<User> users) {
+    LocalDate currentDate = LocalDate.now();
+    return users.stream()
+        .peek(user -> user.setDateOfReg(currentDate))
+        .map(repository::save)
+        .collect(Collectors.toSet());
+  }
+
 }

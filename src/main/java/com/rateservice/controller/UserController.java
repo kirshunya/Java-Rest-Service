@@ -7,6 +7,8 @@ import com.rateservice.service.UserService;
 import io.micrometer.core.annotation.Timed;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -79,5 +81,11 @@ public class UserController {
   public Object getUsersWithCreditDateGreaterThan(
       @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
     return service.findUsersWithCreditDateGreaterThan(date);
+  }
+
+  /** Bulk operation*/
+  @PostMapping("/bulk_save_users/")
+  public Set<User> bulkCreateUsers(@RequestBody List<User> users) {
+    return service.bulkCreateUsers(users);
   }
 }
