@@ -7,7 +7,7 @@ import styles from './Navbar.module.css'
 
 export function MyNavbar() {
     return (
-        <Navbar className={styles}>
+        <Navbar className={styles.navbarContainer}>
             <Container>
                 <Navbar.Brand href="#home">Navigation Bar</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -15,10 +15,10 @@ export function MyNavbar() {
                     <Nav className="me-auto">
                         <Nav.Link href="/">Home</Nav.Link>
                         <Nav.Link href="/users">Пользователи</Nav.Link>
-                        <NavDropdown title="Подменю" id="basic-nav-dropdown">
-                            <NavDropdown.Item href="#action/3.1">Действие 1</NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.2">Действие 2</NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.3">Действие 3</NavDropdown.Item>
+                        <NavDropdown title="Списки" id="basic-nav-dropdown">
+                            <NavDropdown.Item href="/users">Пользователи</NavDropdown.Item>
+                            <NavDropdown.Item href="/banks">Банки</NavDropdown.Item>
+                            <NavDropdown.Item href="/credits">Кредиты</NavDropdown.Item>
                             <NavDropdown.Divider />
                             <NavDropdown.Item href="#action/3.4">Разделенный ссылок</NavDropdown.Item>
                         </NavDropdown>

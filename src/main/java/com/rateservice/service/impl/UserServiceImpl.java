@@ -178,4 +178,10 @@ public class UserServiceImpl implements UserService {
         .collect(Collectors.toSet());
   }
 
+  @Override
+  public User getUserById(Long userId) {
+    return repository.findById(userId)
+      .orElseThrow(() -> new RuntimeException("User not found with id " + userId));
+  }
+
 }

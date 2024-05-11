@@ -35,4 +35,6 @@ public interface UserService {
 
   Set<User> bulkCreateUsers(List<User> users);
 
+  User getUserById(Long userId);
+
 }
