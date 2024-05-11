@@ -88,4 +88,9 @@ public class UserController {
   public Set<User> bulkCreateUsers(@RequestBody List<User> users) {
     return service.bulkCreateUsers(users);
   }
+
+  @GetMapping("/{userId}")
+  public User getUserById(@PathVariable Long userId) {
+    return service.getUserById(userId);
+  }
 }
