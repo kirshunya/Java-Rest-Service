@@ -1,0 +1,36 @@
+/* В файле Search.module.css или в другом CSS файле */
+.searchContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Добавляет пространство между элементами */
+    margin-bottom: 5px;
+}
+
+.searchInput {
+    flex-grow: 100; /* Позволяет полю ввода занимать доступное пространство */
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s ease;
+}
+
+.searchInput:focus {
+    border-color: #007bff;
+}
+
+.searchButton {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 10px;
+}
+
+.searchButton:hover {
+    background-color: #0056b3;
+}
