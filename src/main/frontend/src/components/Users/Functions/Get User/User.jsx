@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styles from './User.module.css';
-import {useNavigate, useParams} from 'react-router-dom';
-import {MyNavbar} from "../../../Navbar/Navbar.jsx";
-import Button from "react-bootstrap/Button"; // Импортируйте useParams
+import { useNavigate, useParams } from 'react-router-dom';
+import { MyNavbar } from '../../../Navbar/Navbar.jsx';
+import Button from 'react-bootstrap/Button';
+import { UpdateUserModal } from '../../../Modal/Modal.jsx';
 
 export const UserDetails = () => {
-    const { userId } = useParams(); // Используйте useParams для получения userId
+    const {userId} = useParams();
     const [user, setUser] = useState(null);
-    const navigate = useNavigate(); // Получаем функцию navigate
+    const navigate = useNavigate();
+    const [showModal, setShowModal] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/user/${userId}`); // Используйте userId из useParams
+                const response = await axios.get(`http://localhost:8080/api/user/${userId}`);
                 setUser(response.data);
             } catch (error) {
                 console.error("Failed to fetch user:", error);
@@ -21,7 +24,7 @@ export const UserDetails = () => {
         };
 
         fetchUser();
-    }, [userId]); // userId теперь динамический и будет обновляться при изменении URL
+    }, [userId]);
 
     if (!user) {
         return <div>Loading...</div>;
@@ -30,26 +33,35 @@ export const UserDetails = () => {
     const deleteUser = async () => {
         try {
             await axios.delete(`http://localhost:8080/api/user/delete_user/${userId}`);
-            navigate(-1); // Возвращаемся на предыдущую страницу после удаления
+            navigate(-1);
         } catch (error) {
             console.error("Failed to delete user:", error);
         }
     };
 
-    const updateUser = async (updatedUser) => {
+    const handleEditUser = (user) => {
+        setSelectedUser(user);
+        setShowModal(true);
+    };
+
+    const handleUpdateUser = async (updatedUser) => {
         try {
-            await axios.put(`http://localhost:8080/api/user/${userId}`, updatedUser);
-            // Обновляем состояние пользователя на странице
+            await axios.put(`http://localhost:8080/api/user/update_user/${updatedUser.id}`, updatedUser);
             setUser(updatedUser);
-            navigate(-1); // Возвращаемся на предыдущую страницу после обновления
+            setShowModal(false);
         } catch (error) {
             console.error("Failed to update user:", error);
+            alert("Ошибка при обновлении пользователя. Пожалуйста, попробуйте снова.");
         }
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
     };
 
     return (
         <div className={styles.userDetails}>
-            <MyNavbar />
+            <MyNavbar/>
             <h2>{`${user.firstName} ${user.lastName}`}</h2>
             <p>ID: {user.id}</p>
             <p>Email: {user.email}</p>
@@ -65,24 +77,29 @@ export const UserDetails = () => {
             <h3>Banks</h3>
             <ul>
                 {user.banks && user.banks.map(bank => (
-                    <li
-                        key={bank.id}>
-                        <p> Bank: {bank.name} </p>
-                        <p>Foundation:{bank.foundation}  </p>
-                        <p>Number of Users: {bank.numberOfUsers} </p>
+                    <li key={bank.id}>
+                        <p>Bank: {bank.name}</p>
+                        <p>Foundation:{bank.foundation}</p>
+                        <p>Number of Users: {bank.numberOfUsers}</p>
                         <p>Percent Per Year: {bank.percentPerYear}</p>
-                        <p> </p>
+                        <p></p>
                     </li>
                 ))}
             </ul>
-            {/* Кнопка удаления */}
+
             <span> <button onClick={deleteUser}>Удалить</button> </span>
+             <span> <button onClick={() => handleEditUser(user)}>Обновить</button> </span>
 
-            {/* Кнопка обновления */}
-            <span><button onClick={() => navigate(`/update-user/${userId}`)}>Обновить</button> </span>
 
-           <button onClick={() => navigate(-1)}>Назад</button>
+            {showModal && (
+                <UpdateUserModal
+                    user={selectedUser}
+                    onUpdateUser={handleUpdateUser}
+                    onClose={handleCloseModal}
+                />
+            )}
 
+            <button onClick={() => navigate(-1)}>Назад</button>
         </div>
     );
 };

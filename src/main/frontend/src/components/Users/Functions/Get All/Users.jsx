@@ -6,14 +6,18 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
 import search_style from '../../../SearchBar/Search.module.css';
-import {UpdateUser} from "../Update User/UpdateUser.jsx";
-
+import { UpdateUserModal } from '../../../Modal/Modal.jsx';
 
 export const Users = () => {
     const [users, setUsers] = useState([]);
     const [searchName, setSearchName] = useState('');
-    const [editingUser, setEditingUser] = useState(null);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
 
     const fetchUsers = async () => {
         try {
@@ -27,11 +31,6 @@ export const Users = () => {
     useEffect(() => {
         fetchUsers();
     }, []);
-
-    const handleEditUser = (userId) => {
-        navigate(`/update-user/${userId}`);
-    };
-
 
     const deleteUser = async (userId) => {
         try {
@@ -49,6 +48,23 @@ export const Users = () => {
 
     const handleSearchChange = (event) => {
         setSearchName(event.target.value);
+    };
+
+    const handleEditUser = (user) => {
+        setSelectedUser(user);
+        setShowModal(true);
+    };
+
+    const handleUpdateUser = async (updatedUser) => {
+        try {
+            await axios.put(`http://localhost:8080/api/user/update_user/${updatedUser.id}`, updatedUser);
+            fetchUsers();
+            setSelectedUser(updatedUser); // Обновляем выбранного пользователя
+            setShowModal(false); // Закрываем модальное окно
+        } catch (error) {
+            console.error("Failed to update user:", error);
+            alert("Ошибка при обновлении пользователя. Пожалуйста, попробуйте снова.");
+        }
     };
 
     const filteredUsers = users.filter(user => user.lastName.toLowerCase().includes(searchName.toLowerCase()));
@@ -92,7 +108,7 @@ export const Users = () => {
                         <td className={styles.tableCell}>{user.sucCredits}</td>
                         <td className={styles.tableCell}>{user.failCredits}</td>
                         <td className={styles.tableCell}>
-                            <Button variant="success" onClick={() => handleCheckUser(user.id)}>Просмотр</Button>
+                            <Button variant="success" onClick={() => handleCheckUser(user.id)}>Просмотр пользователя</Button>
                             <Button variant="primary" onClick={() => handleEditUser(user)}>Редактировать</Button>
                             <Button variant="danger" onClick={() => deleteUser(user.id)}>Удалить</Button>
                         </td>
@@ -100,6 +116,15 @@ export const Users = () => {
                 ))}
                 </tbody>
             </Table>
+
+            {showModal && (
+                <UpdateUserModal
+                    user={selectedUser}
+                    onUpdateUser={handleUpdateUser}
+                    onClose={handleCloseModal}
+                />
+            )}
         </div>
     );
 };
+
