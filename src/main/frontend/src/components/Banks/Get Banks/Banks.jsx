@@ -1,12 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styles from './Banks.module.css';
-import { MyNavbar } from "../components/Navbar/Navbar.jsx";
+import { MyNavbar } from "../../Navbar/Navbar.jsx";
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
 export const Banks = () => {
     const [banks, setBanks] = useState([]);
+
+    const deleteBank = async (Id) => {
+        try {
+            await axios.delete(`http://localhost:8080//api/bank/delete_bank/${Id}`);
+            fetchUsers();
+        } catch (error) {
+            console.error("Failed to delete bank:", error);
+            alert("Ошибка при удалении пользователя. Пожалуйста, попробуйте снова.");
+        }
+    };
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -46,8 +56,7 @@ export const Banks = () => {
                         <td className={styles.tableCell}>{banks.percentPerYear}</td>
                         <td className={styles.tableCell}>{banks.dateOfFoundation}</td>
                         <td className={styles.tableCell}>
-                            <Button variant="primary" onClick={() => handleEditUser(banks.id)}>Редактировать</Button>{' '}
-                            <Button variant="danger" onClick={() => handleDeleteUser(banks.id)}>Удалить</Button>
+                            {/*<Button variant="danger" onClick={() => deleteBank(banks.id)}>Удалить</Button>*/}
                         </td>
                     </tr>
                 ))}

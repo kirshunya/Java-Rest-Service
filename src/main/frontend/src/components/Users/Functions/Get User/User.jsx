@@ -63,25 +63,43 @@ export const UserDetails = () => {
         <div className={styles.userDetails}>
             <MyNavbar/>
             <h2>{`${user.firstName} ${user.lastName}`}</h2>
-            <p>ID: {user.id}</p>
+            <p>Id: {user.id}</p>
             <p>Email: {user.email}</p>
             <p>Suc Credits: {user.sucCredits}</p>
             <p>Fail Credits: {user.failCredits}</p>
             <p>Date of Registration: {user.dateOfReg}</p>
 
             <h3>Credit</h3>
-            <p>Limit: {user.credit && user.credit.limit}</p>
-            <p>Value: {user.credit && user.credit.value}</p>
-            <p>End of Credit: {user.credit && user.credit.endOfCredit}</p>
+            <p>Id: {user.credit.id}</p>
+            <p>Limit: {user.credit.limit}</p>
+            <p>Value: {user.credit.value}</p>
+            <p>End of Credit: {user.credit.endOfCredit}</p>
 
             <h3>Banks</h3>
             <ul>
                 {user.banks && user.banks.map(bank => (
                     <li key={bank.id}>
+                        <p>Id: {bank.id}</p>
                         <p>Bank: {bank.name}</p>
                         <p>Foundation:{bank.foundation}</p>
                         <p>Number of Users: {bank.numberOfUsers}</p>
                         <p>Percent Per Year: {bank.percentPerYear}</p>
+                        <p></p>
+                    </li>
+                ))}
+            </ul>
+
+            <h3>Pay cards</h3>
+            <ul>
+                {user.payCards && user.payCards.map(payCards => (
+                    <li key={payCards.id}>
+                        <p>Id: {payCards.id}</p>
+                        <p>Value: {payCards.value}</p>
+                        <p>Date: {payCards.date}</p>
+                        <p>First Digits:{payCards.firstDigits}</p>
+                        <p>Second Digits: {payCards.secondDigits}</p>
+                        <p>Third Digits: {payCards.thirdDigits}</p>
+                        <p>Fourth Digits: {payCards.fourthDigits}</p>
                         <p></p>
                     </li>
                 ))}

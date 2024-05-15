@@ -42,8 +42,8 @@ export const Credits = () => {
                         <td className={styles.tableCell}>{credits.value}</td>
                         <td className={styles.tableCell}>{credits.endOfCredit}</td>
                         <td className={styles.tableCell}>
-                            <Button variant="primary" onClick={() => handleEditUser(credits.id)}>Редактировать</Button>{' '}
-                            <Button variant="danger" onClick={() => handleDeleteUser(credits.id)}>Удалить</Button>
+                            {/*<Button variant="primary" onClick={() => handleEditUser(credits.id)}>Редактировать</Button>{' '}*/}
+                           {/*<Button variant="danger" onClick={() => handleDeleteUser(credits.id)}>Удалить</Button>*/}
                         </td>
                     </tr>
                 ))}
